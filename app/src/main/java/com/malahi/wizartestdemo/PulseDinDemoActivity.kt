@@ -18,7 +18,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.cloudpos.OperationListener
 import com.cloudpos.OperationResult
+import com.cloudpos.POSTerminal
 import com.cloudpos.extboard.ExtBoardDevice
+import com.cloudpos.sdk.impl.DeviceName
 
 class PulseDinDemoActivity : ComponentActivity() {
 
@@ -45,7 +47,8 @@ class PulseDinDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pulse_din_demo)
-
+        extBoardDevice =
+            POSTerminal.getInstance(this).getDevice(DeviceName.EXT_BOARD) as? ExtBoardDevice
         initViews()
         initListeners()
     }

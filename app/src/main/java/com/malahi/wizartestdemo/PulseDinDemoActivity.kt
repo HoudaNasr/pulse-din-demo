@@ -52,11 +52,17 @@ class PulseDinDemoActivity : ComponentActivity() {
         initListeners()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        closePort()
+    }
+
     private fun initDevice() {
         if (extBoardDevice == null) {
             extBoardDevice =
                 POSTerminal.getInstance(this).getDevice(DeviceName.EXT_BOARD) as? ExtBoardDevice
             try {
+                extBoardDevice?.open()
                 log("Device opened successfully.")
                 Toast.makeText(this, "Device opened successfully.", Toast.LENGTH_LONG).show()
             } catch (e: DeviceException) {
@@ -69,6 +75,10 @@ class PulseDinDemoActivity : ComponentActivity() {
                 log("Unexpected error while opening device: " + e.message)
             }
         }
+    }
+
+    private fun closePort(){
+        extBoardDevice?.close()
     }
 
     private fun initViews() {
@@ -121,7 +131,7 @@ class PulseDinDemoActivity : ComponentActivity() {
     private fun triggerRelay(port: Int, duration: Int) {
         Thread {
             try {
-                extBoardDevice?.open()
+
 
                 extBoardDevice?.triggerRelay(port, duration, 0, 1)
 
@@ -144,7 +154,6 @@ class PulseDinDemoActivity : ComponentActivity() {
     ) {
         Thread {
             try {
-                extBoardDevice?.open()
                 extBoardDevice?.triggerPulse(port, voltage, duration, interval, count)
                 log("Pulse sent")
 
@@ -168,8 +177,6 @@ class PulseDinDemoActivity : ComponentActivity() {
         Thread {
             try {
                 log("Opening device for DIN polling...")
-                extBoardDevice?.open()
-
                 val timeout = 5000L
                 val startTime = System.currentTimeMillis()
 
@@ -197,9 +204,6 @@ class PulseDinDemoActivity : ComponentActivity() {
 
             } catch (e: Exception) {
                 log("❌ Polling error: ${e.message}")
-            } finally {
-                extBoardDevice?.close()
-                log("Device closed after polling")
             }
         }.start()
     }
@@ -208,7 +212,6 @@ class PulseDinDemoActivity : ComponentActivity() {
         Thread {
             try {
                 log("Opening device for DIN listening...")
-                extBoardDevice?.open()
 
                 log("👂 Start listening for DIN...")
 
@@ -232,9 +235,6 @@ class PulseDinDemoActivity : ComponentActivity() {
 
             } catch (e: Exception) {
                 log("❌ Listen error: ${e.message}")
-            } finally {
-                extBoardDevice?.close()
-                log("Device closed after listening")
             }
         }.start()
     }

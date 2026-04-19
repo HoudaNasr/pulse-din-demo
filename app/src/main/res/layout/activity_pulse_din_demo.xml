@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 🔹 SETTINGS SECTION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <!-- Mode -->
+        <RadioGroup
+            android:id="@+id/radioMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioRelay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Relay"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/radioPulse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pulse"/>
+        </RadioGroup>
+
+        <!-- Port -->
+        <TextView
+            android:text="Port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <RadioGroup
+            android:id="@+id/radioPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/port0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:checked="true"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/port1"
+                android:text="1"/>
+        </RadioGroup>
+
+        <!-- Voltage -->
+        <TextView
+            android:text="Voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <RadioGroup
+            android:id="@+id/radioVoltage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/vol0"
+                android:text="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/vol1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"/>
+        </RadioGroup>
+
+        <!-- Duration -->
+        <EditText
+            android:id="@+id/etDuration"
+            android:hint="Duration (ms) - e.g. 200"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Interval -->
+        <EditText
+            android:id="@+id/etInterval"
+            android:hint="Interval (ms) - e.g. 300"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Pulse Count -->
+        <EditText
+            android:id="@+id/etPulseCount"
+            android:hint="Pulse Count - e.g. 1"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- 🔹 ACTION BUTTONS -->
+        <Button
+            android:id="@+id/btnTrigger"
+            android:text="Trigger (Pulse / Relay)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"/>
+
+        <Button
+            android:id="@+id/btnListen"
+            android:text="Start DIN Monitoring"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- 🔹 DIN STATE -->
+        <TextView
+            android:id="@+id/tvDinState"
+            android:text="DIN State: ---"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 🔹 LOGS -->
+        <TextView
+            android:text="Logs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#EEEEEE">
+
+            <TextView
+                android:id="@+id/tvLog"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"/>
+        </ScrollView>
+
+    </LinearLayout>
+</ScrollView>

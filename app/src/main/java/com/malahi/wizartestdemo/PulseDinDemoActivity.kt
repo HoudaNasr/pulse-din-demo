@@ -13,9 +13,10 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import com.cloudpos.DeviceException
 import com.cloudpos.OperationListener
 import com.cloudpos.OperationResult
 import com.cloudpos.POSTerminal
@@ -30,7 +31,6 @@ class PulseDinDemoActivity : ComponentActivity() {
     private lateinit var btnListen: Button
     private lateinit var tvDinState: TextView
     private lateinit var tvLog: TextView
-
     private val manageAllFilesAccessLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -47,10 +47,28 @@ class PulseDinDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pulse_din_demo)
-        extBoardDevice =
-            POSTerminal.getInstance(this).getDevice(DeviceName.EXT_BOARD) as? ExtBoardDevice
+        initDevice()
         initViews()
         initListeners()
+    }
+
+    private fun initDevice() {
+        if (extBoardDevice == null) {
+            extBoardDevice =
+                POSTerminal.getInstance(this).getDevice(DeviceName.EXT_BOARD) as? ExtBoardDevice
+            try {
+                log("Device opened successfully.")
+                Toast.makeText(this, "Device opened successfully.", Toast.LENGTH_LONG).show()
+            } catch (e: DeviceException) {
+                e.printStackTrace()
+                Toast.makeText(this, "DeviceException" + e.message, Toast.LENGTH_LONG).show()
+                log("Failed to open device: " + e.message)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Exception " + e.message, Toast.LENGTH_LONG).show()
+                log("Unexpected error while opening device: " + e.message)
+            }
+        }
     }
 
     private fun initViews() {
@@ -116,6 +134,7 @@ class PulseDinDemoActivity : ComponentActivity() {
             }
         }.start()
     }
+
     private fun triggerPulse(
         port: Int,
         voltage: Int,
@@ -126,15 +145,21 @@ class PulseDinDemoActivity : ComponentActivity() {
         Thread {
             try {
                 extBoardDevice?.open()
-
                 extBoardDevice?.triggerPulse(port, voltage, duration, interval, count)
+                log("Pulse sent")
 
-                log("Pulse → port=$port vol=$voltage dur=$duration int=$interval count=$count")
-
+            } catch (e: DeviceException) {
+                runOnUiThread {
+                    Toast.makeText(this, "DeviceException" + e.message, Toast.LENGTH_LONG).show()
+                }
+                log("DeviceException : ${e.message}")
             } catch (e: Exception) {
-                log("Pulse error: ${e.message}")
-            } finally {
-                extBoardDevice?.close()
+                runOnUiThread {
+                    Toast.makeText(this, "Exception" + e.message, Toast.LENGTH_LONG).show()
+
+                }
+
+                log("Exception error: ${e.message}")
             }
         }.start()
     }
@@ -260,6 +285,6 @@ class PulseDinDemoActivity : ComponentActivity() {
     }
 
     private fun logFile(message: String) {
-        FileLogger.log(this@PulseDinDemoActivity , TAG , message = message)
+        FileLogger.log(this@PulseDinDemoActivity, TAG, message = message)
     }
 }

@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
-
+    <uses-permission android:name="android.permission.CLOUDPOS_INNER_GPIO" />
     <uses-permission android:name="android.permission.READ_POS_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_POS_SETTINGS" />
     <uses-permission android:name="android.permission.CLOUDPOS_SERIAL" />

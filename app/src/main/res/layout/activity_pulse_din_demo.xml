@@ -118,23 +118,41 @@
             android:layout_height="wrap_content"/>
 
         <!-- 🔹 ACTION BUTTONS -->
+
         <Button
             android:id="@+id/btnTrigger"
-            android:text="Trigger (Pulse / Relay)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp"
+            android:text="Trigger (Pulse / Relay)" />
+
+        <Button
+            android:id="@+id/btnReadDin"
+            android:text="Start Reading DIN"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnListen"
             android:text="Start DIN Monitoring"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"/>
 
         <!-- 🔹 DIN STATE -->
         <TextView
-            android:id="@+id/tvDinState"
-            android:text="DIN State: ---"
+            android:id="@+id/tvDinStatePort3"
+            android:text="DIN State Port 3: ---"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 🔹 DIN STATE2 -->
+        <TextView
+            android:id="@+id/tvDinStatePort4"
+            android:text="DIN State Port 4: ---"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"

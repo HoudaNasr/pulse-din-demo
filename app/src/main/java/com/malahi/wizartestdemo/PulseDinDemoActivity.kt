@@ -30,11 +30,15 @@ class PulseDinDemoActivity : ComponentActivity() {
     private var TAG = "PulseDinDemoActivity"
     private var extBoardDevice: ExtBoardDevice? = null
     private lateinit var btnTrigger: Button
-    private lateinit var btnListen: Button
+    private lateinit var btnStopListen: Button
     private lateinit var btnReadDin: Button
     private lateinit var tvDinStatePort3: TextView
     private lateinit var tvDinStatePort4: TextView
     private lateinit var tvLog: TextView
+    private lateinit var tvLog2: TextView
+    private var isEnableReadDin: Boolean = false
+    private var pollingThreadPort3: Thread? = null
+    private var pollingThreadPort4: Thread? = null
     private val manageAllFilesAccessLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -83,15 +87,17 @@ class PulseDinDemoActivity : ComponentActivity() {
 
     private fun closePort() {
         extBoardDevice?.close()
+        isEnableReadDin = false
     }
 
     private fun initViews() {
         btnTrigger = findViewById(R.id.btnTrigger)
-        btnListen = findViewById(R.id.btnListen)
+        btnStopListen = findViewById(R.id.btnStopListen)
         btnReadDin = findViewById(R.id.btnReadDin)
         tvDinStatePort3 = findViewById(R.id.tvDinStatePort3)
         tvDinStatePort4 = findViewById(R.id.tvDinStatePort4)
         tvLog = findViewById(R.id.tvLog)
+        tvLog2 = findViewById(R.id.tvLog2)
     }
 
     private fun initListeners() {
@@ -106,22 +112,17 @@ class PulseDinDemoActivity : ComponentActivity() {
             if (isRelay()) {
                 triggerRelay(port, duration)
             } else {
-                startPollingDinPort3()
-                startPollingDinPort4()
-                Thread.sleep(100)
                 triggerPulse(port, voltage, duration, interval, count)
             }
         }
 
-        btnListen.setOnClickListener {
-//            listenForDin()
-//            waitForDinEvent()
-
+        btnStopListen.setOnClickListener {
+            stopPolling()
         }
 
         btnReadDin.setOnClickListener {
-//            startPollingDinPort3()
-//            startPollingDinPort4()
+            startPolling3()
+            startPolling4()
         }
     }
 
@@ -230,6 +231,98 @@ class PulseDinDemoActivity : ComponentActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun startPolling3() {
+        if (pollingThreadPort3?.isAlive == true) {
+            log("⚠️ Polling already running 3")
+            return
+        }
+
+        isEnableReadDin = true
+
+        pollingThreadPort3 = Thread {
+            var lastState = -1
+
+            log("👂 Start polling DIN 3...")
+
+            while (isEnableReadDin) {
+                try {
+                    val din = extBoardDevice?.readDIN(0) ?: -1
+
+                    if (din != lastState) {
+                        if (lastState != -1)
+                            log("Port 3 value before is : $lastState")
+                        lastState = din
+                        runOnUiThread {
+                            tvDinStatePort3.text = "DIN: $din"
+                            log("Port 3 changed to: $din")
+                            log("----------------")
+                        }
+//                        if (din == 0) {
+//                            log("🔥 MACHINE EVENT From Port 3")
+//                        }
+                    }
+
+                    Thread.sleep(10)
+
+                } catch (e: Exception) {
+                    log("❌ Polling error From Port 3: ${e.message}")
+                }
+            }
+
+            log("⏹ Polling stopped From Port 3")
+        }
+
+        pollingThreadPort3?.start()
+    }
+
+    private fun startPolling4() {
+        if (pollingThreadPort4?.isAlive == true) {
+            log2("⚠️ Polling already running 4")
+            return
+        }
+
+        isEnableReadDin = true
+
+        pollingThreadPort4 = Thread {
+            var lastState = -1
+
+            log2("👂Start polling DIN 4...")
+
+            while (isEnableReadDin) {
+                try {
+                    val din = extBoardDevice?.readDIN(1) ?: -1
+
+                    if (din != lastState) {
+                        if (lastState != -1)
+                            log2("Port 4 value before is : $lastState")
+                        lastState = din
+                        runOnUiThread {
+                            tvDinStatePort4.text = "DIN: $din"
+                            log2("Port 4 changed to : $din")
+                            log2("---------------")
+                        }
+//                        if (din == 0) {
+//                            log("🔥 MACHINE EVENT From Port 4")
+//                        }
+                    }
+
+                    Thread.sleep(10)
+
+                } catch (e: Exception) {
+                    log2("❌ Polling error From Port 4: ${e.message}")
+                }
+            }
+
+            log2("⏹Polling stopped From Port 4")
+        }
+
+        pollingThreadPort4?.start()
+    }
+
+    private fun stopPolling() {
+        isEnableReadDin = false
     }
 
     private fun startPollingDinPort3() {
@@ -382,6 +475,18 @@ class PulseDinDemoActivity : ComponentActivity() {
             tvLog.append("\n$message")
 
             val scrollView = tvLog.parent as? ScrollView
+            scrollView?.post {
+                scrollView.fullScroll(View.FOCUS_DOWN)
+            }
+        }
+        logFile(message = message)
+    }
+
+    private fun log2(message: String) {
+        runOnUiThread {
+            tvLog2.append("\n$message")
+
+            val scrollView = tvLog2.parent as? ScrollView
             scrollView?.post {
                 scrollView.fullScroll(View.FOCUS_DOWN)
             }

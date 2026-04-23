@@ -190,48 +190,6 @@ class PulseDinDemoActivity : ComponentActivity() {
     }
 
 
-    private fun waitForDinEvent() {
-        Thread {
-            try {
-                log("🔌 Opening device...")
-
-                log("👂 Waiting for DIN event...")
-
-                val result = extBoardDevice?.waitForRead(100, 30)
-
-                val code = result?.resultCode ?: -999
-                val data = result?.data
-
-                runOnUiThread {
-                    if (code < 0) {
-                        tvDinStatePort3.text = "❌ Error: $code"
-                        log("❌ waitForRead error: $code")
-                    } else {
-                        tvDinStatePort3.text = "✅ DIN Triggered: (code=$code) (data=$data)"
-
-                        if (data != null && data.isNotEmpty()) {
-
-                            val hex = data.joinToString(" ") { "%02X".format(it) }
-
-                            val dinValue = data.getOrNull(data.size - 3)?.toInt() ?: -1
-
-                            runOnUiThread {
-                                tvDinStatePort3.text = "DIN RAW: $hex\nDIN Value: $dinValue"
-                                log("DIN RAW: $hex")
-                                log("DIN Value: $dinValue")
-                            }
-                        }
-                    }
-                }
-
-            } catch (e: Exception) {
-                runOnUiThread {
-                    tvDinStatePort3.text = "❌ Exception: ${e.message}"
-                    log("❌ Exception: ${e.message}")
-                }
-            }
-        }.start()
-    }
 
     private fun startPolling3() {
         if (pollingThreadPort3?.isAlive == true) {
@@ -259,9 +217,7 @@ class PulseDinDemoActivity : ComponentActivity() {
                             log("Port 3 changed to: $din")
                             log("----------------")
                         }
-//                        if (din == 0) {
-//                            log("🔥 MACHINE EVENT From Port 3")
-//                        }
+
                     }
 
                     Thread.sleep(10)
@@ -303,9 +259,7 @@ class PulseDinDemoActivity : ComponentActivity() {
                             log2("Port 4 changed to : $din")
                             log2("---------------")
                         }
-//                        if (din == 0) {
-//                            log("🔥 MACHINE EVENT From Port 4")
-//                        }
+
                     }
 
                     Thread.sleep(10)
@@ -406,36 +360,6 @@ class PulseDinDemoActivity : ComponentActivity() {
         }.start()
     }
 
-    private fun listenForDin() {
-        Thread {
-            try {
-                log("Opening device for DIN listening...")
-
-                log("👂 Start listening for DIN...")
-
-                extBoardDevice?.listenForRead(
-                    100,
-                    object : OperationListener {
-                        override fun handleResult(result: OperationResult) {
-                            val extResult = result as ExtBoardOperationResult?
-                            val code = result.resultCode
-
-                            runOnUiThread {
-                                tvDinStatePort3.text = "DIN Triggered: $code"
-                                log("⚡ DIN event received: $code")
-                            }
-                        }
-                    },
-                    30
-                )
-
-                log("⏳ Listening finished or timeout reached")
-
-            } catch (e: Exception) {
-                log("❌ Listen error: ${e.message}")
-            }
-        }.start()
-    }
 
     override fun onResume() {
         super.onResume()

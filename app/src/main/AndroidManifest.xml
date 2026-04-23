@@ -10,6 +10,11 @@
     <uses-permission android:name="android.permission.WRITE_POS_SETTINGS" />
     <uses-permission android:name="android.permission.CLOUDPOS_SERIAL" />
 
+    <uses-permission android:name="android.permission.CLOUDPOS_DEFAULT_LAUNCHER" />
+
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -30,6 +35,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MDBDemoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.WizarTestDemo">
         </activity>
     </application>
 

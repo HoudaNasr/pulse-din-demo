@@ -17,12 +17,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.cloudpos.DeviceException
-import com.cloudpos.OperationListener
-import com.cloudpos.OperationResult
 import com.cloudpos.POSTerminal
 import com.cloudpos.extboard.ExtBoardDevice
-import com.cloudpos.extboard.ExtBoardOperationResult
 import com.cloudpos.sdk.impl.DeviceName
+import com.malahi.wizartestdemo.Utils.FileLogger
 
 
 class PulseDinDemoActivity : ComponentActivity() {

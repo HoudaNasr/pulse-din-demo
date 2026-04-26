@@ -1,4 +1,4 @@
-package com.malahi.wizartestdemo;
+package com.malahi.wizartestdemo.Utils;
 
 
 public class HandleCallBack {

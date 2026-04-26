@@ -1,4 +1,4 @@
-package com.malahi.wizartestdemo
+package com.malahi.wizartestdemo.Utils
 import android.content.Context
 import android.os.Environment
 import android.os.Handler
